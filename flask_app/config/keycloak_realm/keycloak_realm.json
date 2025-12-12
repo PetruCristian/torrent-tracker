@@ -1,0 +1,54 @@
+{
+  "realm": "tracker-realm",
+  "enabled": true,
+  "roles": {
+    "realm": [
+      { "name": "normal", "description": "Can download torrents and comment" },
+      { "name": "uploader", "description": "Can upload and manage torrents" },
+      { "name": "admin", "description": "Full access to infrastructure" }
+    ]
+  },
+  "users": [
+    {
+      "username": "testuser",
+      "enabled": true,
+      "email": "test@example.com",
+      "firstName": "Test",
+      "lastName": "User",
+      "emailVerified": true,
+      "credentials": [
+        { "type": "password", "value": "1234", "temporary": false }
+      ],
+      "realmRoles": [ "uploader" ]
+    },
+    {
+      "username": "theadministrator",
+      "enabled": true,
+      "email": "admin@example.com",
+      "firstName": "The",
+      "lastName": "Administrator",
+      "emailVerified": true,
+      "credentials": [
+        { "type": "password", "value": "admin", "temporary": false }
+      ],
+      "realmRoles": [ "admin" ]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "flask-app",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "savonea",
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "authorizationServicesEnabled": true,
+      "redirectUris": [
+        "http://localhost:5000/*"
+      ],
+      "webOrigins": [
+        "+"
+      ]
+    }
+  ]
+}
