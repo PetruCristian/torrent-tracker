@@ -1,0 +1,89 @@
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: tracker_db
+    ports:
+      - target: 5432
+        published: 5432
+        protocol: tcp
+        mode: host
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.9
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:25.0.0
+    command: start-dev --import-realm
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/tracker_db
+      KC_DB_USERNAME: admin
+      KC_DB_PASSWORD: admin
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - target: 8080
+        published: 8080
+        protocol: tcp
+        mode: host
+    volumes:
+      - ./flask_app/config/keycloak_realm:/opt/keycloak/data/import/
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  web:
+    image: tracker-web-app:latest
+    ports:
+      - target: 5000
+        published: 5000
+        protocol: tcp
+        mode: host
+    environment:
+      DATABASE_URL: postgresql://admin:admin@postgres:5432/tracker_db
+      REDIS_URL: redis://redis:6379/0
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      KEYCLOAK_URL: http://keycloak:8080
+      KEYCLOAK_CLIENT_SECRET: savonea
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      update_config:
+        parallelism: 1
+        delay: 10s
+
+volumes:
+  postgres_data:
+
+networks:
+  default:
+    driver: overlay
