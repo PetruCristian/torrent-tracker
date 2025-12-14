@@ -11,7 +11,7 @@ class User(db.Model):
 class Torrent(db.Model):
     __tablename__ = 'torrents'
     id = db.Column(db.Integer, primary_key=True)
-    info_hash = db.Column(db.String(40), unique=True, nullable=False) # Essential for tracker
+    info_hash = db.Column(db.String(40), unique=True, nullable=False)
     filename = db.Column(db.String(255), nullable=False)
     uploader_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
