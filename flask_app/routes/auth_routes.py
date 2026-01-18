@@ -165,3 +165,18 @@ def update_user_role(user_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "Database update failed", "details": str(e)}), 500
+
+@auth_bp.route("/")
+def hello_world():
+    return """
+<html>
+<head>
+    <title>
+        Tracker
+    </title>
+</head>
+<body>
+    Hello, World!
+</body>
+</html>
+"""

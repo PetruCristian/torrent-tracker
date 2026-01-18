@@ -1,7 +1,8 @@
 import requests
 from flask_app.config import Config
 
-BASE_URL = "http://localhost:" + str(Config.REST_API_PORT)
+# BASE_URL = "http://localhost:" + str(Config.REST_API_PORT)
+BASE_URL = "http://localhost:" + str(Config.NGINX_PORT)
 
 def register(username: str, email: str, password: str, firstName: str, lastName: str):
     user_payload = {

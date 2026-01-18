@@ -1,7 +1,8 @@
 import os
 
 class Config:
-    REST_API_PORT = 5000
+    REST_API_PORT = 5000 # inside the flask container
+    NGINX_PORT = 5000 # published/exposed to the machine hosting the containers
 
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         "DATABASE_URL", 

@@ -2,6 +2,7 @@ import requests
 import uuid
 
 BASE_URL = "http://localhost:5000"
+# BASE_URL = "http://localhost:80"
 
 def run_test():
     unique_id = str(uuid.uuid4())[:8]
