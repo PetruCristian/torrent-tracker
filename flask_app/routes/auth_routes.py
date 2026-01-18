@@ -2,11 +2,13 @@ import requests
 from flask import Blueprint, request, jsonify
 from models import User, db
 from services.auth_service import login_user, get_keycloak_admin_token, require_roles, get_keycloak_user_id, get_role_representation
+from services.redis_service import rate_limit
 from config import Config
 
 auth_bp = Blueprint("auth", __name__)
 
 @auth_bp.route("/auth/register", methods=["POST"])
+@rate_limit()
 def register():
     data = request.get_json()
 
@@ -74,6 +76,7 @@ def register():
         return jsonify({"error": "Failed to create user", "details": response.text}), response.status_code
 
 @auth_bp.route("/auth/login", methods=["POST"])
+@rate_limit()
 def login():
     data = request.get_json()
     username = data.get("username")
@@ -93,6 +96,7 @@ def logout():
     return jsonify({"message": "Logged out successfully"}), 200
 
 @auth_bp.route("/users", methods=["GET"])
+@rate_limit()
 @require_roles("admin")
 def list_users():
     users = User.query.all()
@@ -107,6 +111,7 @@ def list_users():
     return jsonify(output), 200
 
 @auth_bp.route('/users/<int:user_id>', methods=['PUT'])
+@rate_limit()
 @require_roles("admin")
 def update_user_role(user_id):
     data = request.get_json()
@@ -167,6 +172,7 @@ def update_user_role(user_id):
         return jsonify({"error": "Database update failed", "details": str(e)}), 500
 
 @auth_bp.route("/")
+@rate_limit()
 def hello_world():
     return """
 <html>

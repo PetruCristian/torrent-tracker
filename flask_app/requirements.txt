@@ -5,3 +5,4 @@ psycopg2-binary==2.9.7
 redis==5.0.0
 elasticsearch==8.9.0
 python-keycloak==3.3.0
+bencodepy==0.9.5
